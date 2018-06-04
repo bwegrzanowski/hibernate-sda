@@ -7,25 +7,27 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
-@Data
 @Entity
+@Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 
-public class CartDetail implements Serializable{
+public class AdvertisingBanner implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long Id;
-    @ManyToOne
-    @JoinColumn
-    Product product;
-    Long amount;
-    @Embedded
-    Price price;
-    @ManyToOne
-    @JoinColumn
-    Cart cart;
+    Long id;
 
+    String name;
+
+    @Lob
+    byte[] image;
+
+    boolean isForAll;
+
+    @ManyToMany(mappedBy = "advertisingBannerSet", cascade = CascadeType.ALL)
+    Set<User> userSet;
 }

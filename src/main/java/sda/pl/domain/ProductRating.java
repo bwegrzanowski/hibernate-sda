@@ -1,7 +1,8 @@
 package sda.pl.domain;
 
 import lombok.*;
-import sda.pl.Product;
+import org.hibernate.annotations.BatchSize;
+import org.w3c.dom.ranges.Range;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class ProductRating implements Serializable {
 
     @Id

@@ -7,19 +7,25 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
-@Data
 @Entity
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 
-public class ProductImage implements Serializable {
+public class Stock implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Lob
-    byte[] image;
-    @OneToOne
+
+    @Enumerated
+    WarehouseName warehouseName;
+    BigDecimal amount;
+
+    @JoinColumn
+    @ManyToOne
     Product product;
+
 }

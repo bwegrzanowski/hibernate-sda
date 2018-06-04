@@ -1,12 +1,10 @@
 package sda.pl;
 
-import sda.pl.domain.Order;
-import sda.pl.domain.OrderDetail;
-import sda.pl.repository.OrderRepository;
-import sda.pl.repository.ProductRepository;
+import sda.pl.domain.*;
+import sda.pl.repository.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public class App {
@@ -44,26 +42,24 @@ public class App {
             ProductRepository.saveOrUpdate(product10);
 
 
-            Order kowalskiOrder = Order.builder()
-                    .date(LocalDateTime.now())
-//                    .email("kowalski@gmail.com")
-                    .RODO(true)
-                    .cityName("Poznan")
-                    .totalPrice(new Price())
-                    .build();
-
-            OrderDetail detail1 = OrderDetail.builder()
-                    .amount(5L)
-                    .product(product10)
-                    .price(product10.getPrice()).build();
-
-            kowalskiOrder.addOrderDetail(detail1);
-            kowalskiOrder.calculateTotalPrice();
-
-
-
-
-            OrderRepository.saveOrder(kowalskiOrder);
+//            Order kowalskiOrder = Order.builder()
+//                    .date(LocalDateTime.now())
+////                    .email("kowalski@gmail.com")
+//                    .RODO(true)
+//                    .cityName("Poznan")
+//                    .totalPrice(new Price())
+//                    .build();
+//
+//            OrderDetail detail1 = OrderDetail.builder()
+//                    .amount(5L)
+//                    .product(product10)
+//                    .price(product10.getPrice()).build();
+//
+//            kowalskiOrder.addOrderDetail(detail1);
+//            kowalskiOrder.calculateTotalPrice();
+//
+//
+//            OrderRepository.saveOrder(kowalskiOrder);
 
             OrderRepository.findAll();
             OrderRepository.findAll().forEach(o -> o.getOrderDetailSet()
@@ -73,6 +69,12 @@ public class App {
                     .forEach(od -> System.out.println("zamowienia z kefirem " + od.getProduct().getName())));
         }
 
+        UserRepository.findAllWithTotalOrderPrice()
+                .forEach(u -> System.out.println(u.getEmail() + " " + u.getTotalOrderPrice()));
 
+        ProductRepository.findByNameCriteriaQuery("KEFI").forEach(p -> System.out.println("criteria: " + p.getName()));
+
+        List<AdvertisingBanner> all = AdvertisingBannerRepository.findAll();
+        all.forEach(a -> System.out.println(a.getId()));
     }
 }

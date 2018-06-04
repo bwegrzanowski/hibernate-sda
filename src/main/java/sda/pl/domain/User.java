@@ -1,21 +1,20 @@
 package sda.pl.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import sda.pl.repository.CartRepository;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-
+@EqualsAndHashCode(exclude = {"orderSet", "cart", "productRatingSet", "advertisingBannerSet"})
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,10 +31,44 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "user")
     Set<Order> orderSet;
-    @OneToMany(mappedBy = "user")
-    Set<Cart> cartSet;
+
+    @OneToOne(mappedBy = "user")
+    Cart cart;
+
     @OneToMany(mappedBy = "user")
     Set<ProductRating> productRatingSet;
 
+    @Transient
+    BigDecimal totalOrderPrice;
 
+    @ManyToMany(cascade = CascadeType.ALL)//, fetch = FetchType.EAGER)
+    //join table do laczenia przez tabele dodatkowa
+    @JoinTable(
+            name = "advertisement_for_the_user",
+            joinColumns = @JoinColumn(name = "advertising_banner_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    Set<AdvertisingBanner> advertisingBannerSet;
+
+
+    public User(Long id, String email, BigDecimal totalOrderPrice) {
+        this.id = id;
+        this.email = email;
+        this.totalOrderPrice = totalOrderPrice;
+    }
+
+    public Cart createCart() {
+        Cart cart = new Cart();
+        cart.setUser(this);
+        return cart;
+    }
+
+    public ProductRating rateProduct(int rate, String description, Product product) {
+        ProductRating productRating = new ProductRating();
+        productRating.setActive(false);
+        productRating.setDescription(description);
+        productRating.setRate(rate);
+        productRating.setProduct(product);
+        return productRating;
+    }
 }
