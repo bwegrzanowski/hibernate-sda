@@ -24,6 +24,7 @@ public class Stock implements Serializable {
     WarehouseName warehouseName;
     BigDecimal amount;
 
+
     @JoinColumn
     @ManyToOne
     Product product;

@@ -5,6 +5,8 @@ import org.hibernate.annotations.BatchSize;
 import org.w3c.dom.ranges.Range;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 
 @Data
@@ -19,7 +21,10 @@ public class ProductRating implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Min(1)
+    @Max(5)
     int rate;
+
     String description;
     @ManyToOne
     @JoinColumn

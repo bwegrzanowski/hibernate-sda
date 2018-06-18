@@ -5,6 +5,7 @@ import org.hibernate.query.Query;
 import sda.pl.domain.Color;
 import sda.pl.HibernateUtil;
 import sda.pl.domain.Product;
+import sda.pl.domain.ProductType;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -27,13 +28,13 @@ public class ProductRepository {
             e.printStackTrace();
             return false;
         } finally {
-            if (session != null) {
+            if (session != null && session.isOpen()) {
                 session.close();
             }
         }
     }
 
-    public static boolean saveOrUpdate(Product product) {
+    public static boolean saveOrUpdateProduct(Product product) {
         Session session = null;
         try {
             session = HibernateUtil.openSession();
@@ -48,7 +49,7 @@ public class ProductRepository {
             }
             return false;
         } finally {
-            if (session != null) {
+            if (session != null && session.isOpen()) {
                 session.close();
             }
         }
@@ -56,7 +57,6 @@ public class ProductRepository {
 
     public static Optional<Product> findProduct(Long id) {
         Session session = null;
-
         try {
             session = HibernateUtil.openSession();
             Product product = session.find(Product.class, id);
@@ -65,7 +65,7 @@ public class ProductRepository {
             e.printStackTrace();
             return Optional.empty();
         } finally {
-            if (session != null) {
+            if (session != null && session.isOpen()) {
                 session.close();
             }
         }
@@ -73,19 +73,17 @@ public class ProductRepository {
 
     public static List<Product> findAll() {
         Session session = null;
-
         try {
             session = HibernateUtil.openSession();
             String hql = "SELECT p FROM Product p ";
             Query query = session.createQuery(hql);
             List resultList = query.getResultList();
-
             return resultList;
         } catch (Exception e) {
             e.printStackTrace();
             return Collections.emptyList();
         } finally {
-            if (session != null) {
+            if (session != null && session.isOpen()) {
                 session.close();
             }
         }
@@ -100,10 +98,8 @@ public class ProductRepository {
             Query query = session.createQuery(hql);
             query.setParameter("price", price);
             query.setMaxResults(100);
-
             List resultList = query.getResultList();
             return resultList;
-
         } catch (Exception e) {
             e.printStackTrace();
             return Collections.emptyList();
@@ -116,7 +112,6 @@ public class ProductRepository {
 
     public static Long countAll() {
         Session session = null;
-
         try {
             session = HibernateUtil.openSession();
             String hql = "Select count(p) from Product p";
@@ -157,6 +152,25 @@ public class ProductRepository {
             }
         }
     }
+
+    public static List<Product> findAllByCategory(ProductType category) {
+        Session session = null;
+        try {
+            session = HibernateUtil.openSession();
+            String hql = "SELECT p FROM Product p where p.productType = :category";
+            Query query = session.createQuery(hql);
+            query.setParameter("category", category);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+    }
+
 //IMPORTANT - DIRTY CHECKING: jesli jestesmy w transakcji i pobieramy encje to nawet
 // bez zapisania transakcji, dane zostana dodane/zmienione
 //    public static boolean findProductWithMagic(Long id){
@@ -167,6 +181,8 @@ public class ProductRepository {
 //            session.getTransaction().begin();
 //            Product product = session.find(Product.class, id);
 //            product.setName(product.getName()+" ++");
+//          // product.addStock(WarehouseName.COMPLAINT, new BigDecimal(6));
+//            product.getStockSet().clear();
 //            session.getTransaction().commit();
 //            return true;
 //        } catch (Exception e) {

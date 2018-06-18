@@ -15,7 +15,7 @@ public class ProductTest {
         Optional<Product> product = ProductRepository.findProduct(2L);
         product.ifPresent(p -> {
                         p.addStock(WarehouseName.MAIN, BigDecimal.ONE);
-                ProductRepository.saveOrUpdate(p);
+                ProductRepository.saveOrUpdateProduct(p);
         });
     }
 }

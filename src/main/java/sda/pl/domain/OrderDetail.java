@@ -26,7 +26,6 @@ public class OrderDetail implements Serializable {
     @ManyToOne
     @JoinColumn
     Order order;
-
     Long amount;
     Price price;
 

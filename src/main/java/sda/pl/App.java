@@ -39,7 +39,7 @@ public class App {
                     .priceNet(new BigDecimal("5"))
                     .priceGross(new BigDecimal("5.5"))
                     .priceSymbol("PLN").build());
-            ProductRepository.saveOrUpdate(product10);
+            ProductRepository.saveOrUpdateProduct(product10);
 
 
 //            Order kowalskiOrder = Order.builder()
@@ -76,5 +76,6 @@ public class App {
 
         List<AdvertisingBanner> all = AdvertisingBannerRepository.findAll();
         all.forEach(a -> System.out.println(a.getId()));
+
     }
 }

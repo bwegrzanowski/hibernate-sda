@@ -14,15 +14,18 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"orderDetailSet", "cartDetailSet", "productImage", "productRatingSet", "stockSet"})
+@EqualsAndHashCode(exclude = {"orderDetailSet", "cartDetailSet", "productImage",
+        "productRatingSet", "stockSet"})
 
 public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     String name;
+
+    @Enumerated
+    ProductType productType;
 
     @Embedded
     Price price;
@@ -64,7 +67,7 @@ public class Product implements Serializable {
     }
 
     public long getStockSumForSale() {
-        return getStockSet().stream().filter(stock -> stock.getWarehouseName()
+        return getStockSet().stream().filter(stock -> !stock.getWarehouseName()
                 .equals(WarehouseName.COMPLAINT)).mapToLong(s -> s.getAmount().longValue()).sum();
     }
 

@@ -5,6 +5,7 @@ import sda.pl.core.ShopException;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -23,11 +24,11 @@ public class Cart implements Serializable {
     @JoinColumn
     User user;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     Set<CartDetail> cartDetailSet;
 
     @Transient
-    boolean valid;
+    private boolean valid;
 
     public void addProductToCart(Product product, Long amount) {
         if (cartDetailSet == null) {
@@ -46,15 +47,14 @@ public class Cart implements Serializable {
                     .product(product).build();
             cartDetailSet.add(newCartDetail);
         } else {
+//            gdy sum = 0 uniemozliwic wstawianie produktu do koszyka
             CartDetail cd = first.get();
 
             if (cd.getAmount() + amount > sum) {
                 amount = sum - cd.getAmount();
             }
-            cd.setAmount(cd.getAmount() + cd.amount);
-
+            cd.setAmount(cd.getAmount() + amount);
         }
-
     }
 
 
@@ -108,7 +108,7 @@ public class Cart implements Serializable {
 
     public Order createNewOrder() throws ShopException {
         checkIsValid();
-        if (valid) {
+        if (!valid) {
             throw new ShopException("brak czesci produktow na stanie magazynowym");
         }
         Order order = new Order();
