@@ -1,23 +1,20 @@
-<%@ page import="sda.pl.domain.Product" %>
-<%@ page import="java.util.List" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="sda.pl.repository.ProductRepository" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="sda.pl.domain.Product" %>
+<%--
   Created by IntelliJ IDEA.
   User: PC
-  Date: 14.06.2018
-  Time: 20:11
+  Date: 18.06.2018
+  Time: 20:12
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-
-    ProductType category = ProductType.valueOf(request.getParameter("category"));
-    List<Product> all = ProductRepository.findAllByCategory(category);
-    pageContext.setAttribute("allProducts", all);
-
+    String name = request.getParameter("phrase");
+    List<Product> all = ProductRepository.findByNameCriteriaQuery(name);
+    pageContext.setAttribute("allProducts",all);
 %>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -39,7 +36,9 @@
 </head>
 
 <body>
-<%@ include file="header.jsp"%>
+
+<%@include file="header.jsp"%>
+
 <!-- Page Content -->
 <div class="container">
 
@@ -59,7 +58,7 @@
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="card h-100">
                             <a target="_blank" href="productImage?productId=${product.id}"><img class="card-img-top"
-                                src="productImage?productId=${product.id}"  onerror="this.src='http://placehold.it/700x400'" ></a>
+                                src="productImage?productId=${product.id}" onerror="this.src='http://placehold.it/700x400'" ></a>
                             <div class="card-body">
                                 <h4 class="card-title">
                                     <a href="product.jsp?productId=${product.id}">${product.name}</a>
@@ -86,7 +85,9 @@
 
 </div>
 <!-- /.container -->
+
 <%@include file="footer.jsp"%>
+
 <!-- Bootstrap core JavaScript -->
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -94,4 +95,3 @@
 </body>
 
 </html>
-

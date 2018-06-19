@@ -137,10 +137,11 @@ public class ProductRepository {
             Root<Product> from = query.from(Product.class);
             query.select(from);
             Predicate whereNameLike = cb.like(from.get("name"), "%" + name + "%");
-            Predicate redProduct = cb.equal(from.get("color"), Color.RED);
-            Predicate whereNameLikeAndColorRed = cb.and(whereNameLike, redProduct);
+//            dodawanie kryteriów w wyszukiwaniu poprzez criteriabuilder:
+//            Predicate redProduct = cb.equal(from.get("color"), Color.RED);
+//            Predicate whereNameLikeAndColorRed = cb.and(whereNameLike, redProduct);
 //            cb.and();
-            query.where(whereNameLikeAndColorRed);
+            query.where(whereNameLike);
             return session.createQuery(query).getResultList();
 
         } catch (Exception e) {

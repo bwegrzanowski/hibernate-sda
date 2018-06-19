@@ -63,7 +63,9 @@
 
                 <div class="col-lg-12 col-md-12 mb-12">
                     <div class="card h-100">
-                        <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
+                        <a target="_blank" href="productImage?productId=${product.id}">
+                            <img class="card-img-top" src="productImage?productId=${product.id}"
+                                 onerror="this.src='http://placehold.it/700x400'"></a>
                         <div class="card-body">
                             <h4 class="card-title">
                                 <a href="#">${product.name}</a>
@@ -75,7 +77,7 @@
                             <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
                         </div>
                         <div>
-                            <form action="/addProductToCart?productId=${product.id}" method="post">
+                            <form action="addProductToCart?productId=${product.id}" method="post">
                                 <label for="productAmount" >Liczba produktów: </label>
                                 <input name="productAmount" id="productAmount" value="1" min="1" type="number">
                                 <button type="submit">Dodaj do koszyka</button>
