@@ -12,7 +12,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     Long productId = Long.valueOf(request.getParameter("productId"));
-
     Optional<Product> product = ProductRepository.findProduct(productId);
     if (product.isPresent()) {
         pageContext.setAttribute("product", product.get());
@@ -73,12 +72,17 @@
                             <h5>${product.price.priceGross} ${product.price.priceNet}</h5>
                             <p class="card-text">${product.color}</p>
                         </div>
+                        <div class="card-body">
+                            <c:if test="${userId eq 1}">
+                                <h5><a href="productAdminPage.jsp?productId=${product.id}">EDYTUJ</a></h5>
+                            </c:if>
+                        </div>
                         <div class="card-footer">
                             <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
                         </div>
                         <div>
                             <form action="addProductToCart?productId=${product.id}" method="post">
-                                <label for="productAmount" >Liczba produktów: </label>
+                                <label for="productAmount">Liczba produktów: </label>
                                 <input name="productAmount" id="productAmount" value="1" min="1" type="number">
                                 <button type="submit">Dodaj do koszyka</button>
                             </form>

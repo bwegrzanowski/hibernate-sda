@@ -3,6 +3,10 @@ package sda.pl.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.servlet.http.Part;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -33,7 +37,7 @@ public class Product implements Serializable {
     @Enumerated(EnumType.STRING)
     Color color;
 
-    @OneToOne(mappedBy = "product")
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     ProductImage productImage;
 
     @OneToMany(mappedBy = "product")
@@ -77,6 +81,19 @@ public class Product implements Serializable {
         }
         productRating.setProduct(this);
         productRatingSet.add(productRating);
+    }
+
+    public void addProductImage(Part photo) throws IOException {
+        InputStream input = photo.getInputStream();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] buffer = new byte[10240];
+        for (int length = 0; (length = input.read(buffer)) > 0; ) output.write(buffer, 0, length);
+
+        ProductImage productImage = new ProductImage();
+        productImage.setImage(output.toByteArray());
+        productImage.setProduct(this);
+
+        this.setProductImage(productImage);
     }
 }
 

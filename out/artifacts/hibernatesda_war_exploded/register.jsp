@@ -41,17 +41,14 @@
     Color[] colors = Color.values();
     pageContext.setAttribute("colors", colors);
 
-
-    String productId = request.getParameter("productId");
-    Product product = new Product();
-    if (productId != null && productId.trim().length() > 0) {
-        Optional<Product> productOptional = ProductRepository.findProduct(Long.valueOf(productId));
-        if (productOptional.isPresent()) {
-            product = productOptional.get();
-        }
+    //
+    Long productId = Long.valueOf(request.getParameter("productId"));
+    Optional<Product> productById = ProductRepository.findProduct(productId);
+    if (productById.isPresent()) {
+        Product product = productById.get();
+        pageContext.setAttribute("product", product);
     }
 
-    pageContext.setAttribute("product", product);
 %>
 <%@include file="header.jsp" %>
 
@@ -71,10 +68,10 @@
 
             <div class="row">
 
-                <form action="productAdmin" method="post" enctype="multipart/form-data">
+                <form action="productAdmin" method="post">
 
                     <div class="form-group">
-                        <input type="hidden" value="${product.id}" name="productId">
+                        <input hidden value="${product.id}" name="productId">
                         <label for="name">Nazwa produktu</label>
                         <input type="text" value="${product.name}" class="form-control" id="name" name="name"
                                placeholder="Nazwa produktu">
